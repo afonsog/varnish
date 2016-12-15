@@ -1,0 +1,25 @@
+# Me guardo la vieja configuracion
+cp /etc/varnish/default.vcl /etc/varnish/old_default.vcl
+
+# Copio la nueva configuracion
+cp /tmp/intraweb.vcl /etc/varnish/default.vcl
+
+# Genero un nuevo nombre de configuracion
+NEW_CONFIG_NAME="boot-$RANDOM"
+
+
+varnishadm "vcl.load $NEW_CONFIG_NAME /etc/varnish/default.vcl"
+if [ $? -eq 0 ]; then
+    # If the load succeeds, remove existing configurations and use the new one
+    varnishadm "vcl.use $NEW_CONFIG_NAME"
+    for CONFIG_NAME in $(varnishadm vcl.list | grep available | awk -F " " '{print $NF}'); do
+        echo "Descartango $CONFIG_NAME"
+        varnishadm "vcl.discard $CONFIG_NAME"
+    done
+    #rm /etc/varnish/old_default.vcl Por ahora no las voy a borrar
+    echo "======           SUCCESSFULLY RELOADED VCL FILE               ======"
+else
+    # If the load fails, restore the old configuration file
+    #mv /etc/varnish/old_default.vcl /etc/varnish/default.vcl
+    echo "======     FAILURE TO RELOAD. PLEASE CHECK CONFIGURATION      ======"
+fi
