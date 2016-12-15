@@ -11,8 +11,8 @@ import directors;
 {{$maxconnections := printf "%s/max-connections" $list_backend }}
 
 backend {{.}} { # Define one backend
-  .host = {{getv $host}};    # IP or Hostname of backend
-  .port = {{getv $port}};           # Port Apache or whatever is listening
+  .host = "{{getv $host}}";    # IP or Hostname of backend
+  .port = "{{getv $port}}";           # Port Apache or whatever is listening
   .max_connections = {{getv $maxconnections}}; # That's it
 
   .first_byte_timeout     = 300s;   # How long to wait before we receive a first byte from our backend?
