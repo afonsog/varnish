@@ -5,4 +5,4 @@ keys = [
   "/self"
 ]
 
-reload_cmd = "/bin/ash /usr/bin/varnish_reload"
+reload_cmd = "/usr/bin/varnish_reload"
