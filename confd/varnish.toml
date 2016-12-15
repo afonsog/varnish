@@ -3,6 +3,7 @@ src="default.vcl.tmpl"
 dest="/etc/varnish/new-default.vcl"
 owner = "root"
 mode = "0644"
+interval = 300
 keys = [
   "/self"
 ]

@@ -1,11 +1,11 @@
-FROM rawmind/rancher-base:0.0.2-1
+FROM alpine
 MAINTAINER Gerónimo Afonso <geronimo.afonso@mikroways.net>
 RUN apk add --no-cache varnish
 #Agrego confd
-#Add https://github.com/kelseyhightower/confd/releases/download/v0.11.0/confd-0.11.0-linux-amd64 /confd
-RUN echo "confd -backend rancher -prefix /2015-12-19 -node rancher-metadata" > confd-rancher
-RUN echo "confd -onetime -backend rancher -prefix /2015-12-19 -node rancher-metadata" > confd-onetime-rancher
-RUN chmod +x confd-onetime-rancher confd-rancher
+Add https://github.com/kelseyhightower/confd/releases/download/v0.11.0/confd-0.11.0-linux-amd64 /confd
+RUN echo "./confd -backend rancher -prefix /2015-12-19 -node rancher-metadata" > confd-rancher
+RUN echo "./confd -onetime -backend rancher -prefix /2015-12-19 -node rancher-metadata" > confd-onetime-rancher
+RUN chmod +x confd-onetime-rancher confd-rancher confd
 # Archivo de configuracion y template de confd
 COPY confd /etc/confd/conf.d
 COPY templates /etc/confd/templates
