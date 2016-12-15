@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/ash
 # Me guardo la vieja configuracion
 cp /etc/varnish/default.vcl /etc/varnish/old_default.vcl
 
