@@ -1,0 +1,34 @@
+vcl 4.0;
+
+import std;
+import directors;
+
+{{ $backends := "/self/service/metadata/varnish-backends"}}
+{{range lsdir $backends}}
+{{ $list_backend := printf "/self/service/metadata/varnish-backends/%s" .}}
+{{$host := printf "%s/host" $list_backend }}
+{{$port := printf "%s/port" $list_backend }}
+{{$maxconnections := printf "%s/max-connections" $list_backend }}
+
+backend {{.}} { # Define one backend
+  .host = {{getv $host}};    # IP or Hostname of backend
+  .port = {{getv $port}};           # Port Apache or whatever is listening
+  .max_connections = {{getv $maxconnections}}; # That's it
+
+  .first_byte_timeout     = 300s;   # How long to wait before we receive a first byte from our backend?
+  .connect_timeout        = 15s;    # How long to wait for a backend connection?
+  .between_bytes_timeout  = 4s;     # How long to wait between bytes received from our backend?
+}
+{{end}}
+
+sub vcl_init {
+  # Called when VCL is loaded, before any requests pass through it.
+  # Typically used to initialize VMODs.
+
+  new vdir = directors.round_robin();
+  {{range lsdir $backends}}
+  vdir.add_backend({{.}});
+  {{end}}
+}
+
+{{if exists "/self/service/metadata/varnish-backends/options"}}{{getv "/self/service/metadata/varnish-backends/options"}}{{end}}
