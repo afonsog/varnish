@@ -5,6 +5,7 @@ owner = "root"
 mode = "0644"
 interval = 300
 keys = [
+  "/stacks",
   "/self"
 ]
 

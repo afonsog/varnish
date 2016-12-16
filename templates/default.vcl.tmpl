@@ -1,34 +1,23 @@
 vcl 4.0;
 
-import std;
+import std;                                                
 import directors;
 
-{{ $backends := "/self/service/metadata/varnish-backends"}}
-{{range lsdir $backends}}
-{{ $list_backend := printf "/self/service/metadata/varnish-backends/%s" .}}
-{{$host := printf "%s/host" $list_backend }}
-{{$port := printf "%s/port" $list_backend }}
-{{$maxconnections := printf "%s/max-connections" $list_backend }}
-
-backend {{.}} { # Define one backend
-  .host = "{{getv $host}}";    # IP or Hostname of backend
-  .port = "{{getv $port}}";           # Port Apache or whatever is listening
-  .max_connections = {{getv $maxconnections}}; # That's it
-
-  .first_byte_timeout     = 300s;   # How long to wait before we receive a first byte from our backend?
-  .connect_timeout        = 15s;    # How long to wait for a backend connection?
-  .between_bytes_timeout  = 4s;     # How long to wait between bytes received from our backend?
+{{range $s, $stack_name := ls "/stacks"}}{{range $i, $service_name := ls (printf "/stacks/%s/services" $stack_name)}}{{if exists (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend" $stack_name $service_name)}}backend {{$backend := getv (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend" $stack_name $service_name)}}{{$backend}}{
+  {{range $i2, $container := ls (printf "/stacks/%s/services/%s/containers" $stack_name $service_name)}}{{ if not (eq $container "stacks")}}{{$ip := getv (printf "/stacks/%s/services/%s/containers/%s/primary_ip" $stack_name $service_name $container)}}.host = "{{$ip}}";{{end}}{{end}}
+  {{if exists (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend_port" $stack_name $service_name)}}{{$port := getv (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend_port" $stack_name $service_name)}}.port = "{{$port}}";
 }
-{{end}}
+{{end}}{{end}}{{end}}{{end}}
+
+
+
 
 sub vcl_init {
   # Called when VCL is loaded, before any requests pass through it.
   # Typically used to initialize VMODs.
 
   new vdir = directors.round_robin();
-  {{range lsdir $backends}}
-  vdir.add_backend({{.}});
-  {{end}}
+  
+  {{range $s, $stack_name := ls "/stacks"}}{{range $i, $service_name := ls (printf "/stacks/%s/services" $stack_name)}}{{if exists (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend" $stack_name $service_name)}}{{$backend := getv (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend" $stack_name $service_name)}}vdir.add_backend({{$backend}});
+  {{end}}{{end}}{{end}}
 }
-
-{{if exists "/self/service/metadata/varnish-backends/options"}}{{getv "/self/service/metadata/varnish-backends/options"}}{{end}}
