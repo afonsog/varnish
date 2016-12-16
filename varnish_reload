@@ -20,8 +20,4 @@ if [ $? -eq 0 ]; then
     done
     #rm /etc/varnish/old_default.vcl
     echo "======           SUCCESSFULLY RELOADED VCL FILE               ======"
-else
-    # Si la carga falla, vuelvo a cargar la vieja configuracion
-    #mv /etc/varnish/old_default.vcl /etc/varnish/default.vcl
-    #echo "======     FAILURE TO RELOAD. PLEASE CHECK CONFIGURATION      ======"
 fi
