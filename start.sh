@@ -46,13 +46,14 @@ chmod 755 ${CONFD_SCRIPT}
 
 # Run confd to get first appli configuration
 ${CONFD_ONETIME}
+CONFD_TEST="/usr/bin/confd ${CONFD_PARAMS}"
 
 #Run varnish
 varnishd -a :80 -T localhost:6082 -s malloc,256m -f /etc/varnish/default.vcl
 
 
 # Run confd
-${CONFD_SCRIPT}
+#${CONFD_TEST}
 
 # Run monit
 #log "[ Starting monit... ]"
