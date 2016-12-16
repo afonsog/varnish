@@ -1,59 +1,54 @@
 #!/usr/bin/env bash
 
-#set -e
-#
-#function log {
-#    echo `date` $ME - $@
-#}
-#
-#function checkrancher {
-#    log "checking rancher network..."
-#    a="`ip a s dev eth0 &> /dev/null; echo $?`" 
-#    while  [ $a -eq 1 ];
-#    do
-#        a="`ip a s dev eth0 &> /dev/null; echo $?`" 
-#        sleep 1
-#    done
-#
-#    b="`ping -c 1 rancher-metadata &> /dev/null; echo $?`"
-#    while [ $b -eq 1 ]; 
-#    do
-#        b="`ping -c 1 rancher-metadata &> /dev/null; echo $?`"
-#        sleep 1 
-#    done
-#}
-#
-#CONFD_BACKEND=${CONFD_BACKEND:-"rancher"}
-#CONFD_BACKEND_SERVER=${CONFD_BACKEND_SERVER:-"rancher-metadata"}
-#CONFD_PREFIX=${CONFD_PREFIX:-"/2015-12-19"}
-#CONFD_INTERVAL=${CONFD_INTERVAL:-5}
-#CONFD_PARAMS=${CONFD_PARAMS:-"-backend ${CONFD_BACKEND} -prefix ${CONFD_PREFIX} -node ${CONFD_BACKEND_SERVER}"}
-#CONFD_ONETIME="/usr/bin/confd -onetime ${CONFD_PARAMS}"
-#CONFD_SCRIPT=${CONFD_SCRIPT:-"/usr/bin/confd-start.sh"}
-#
-#CONFD_PARAMS="-interval ${CONFD_INTERVAL} ${CONFD_PARAMS}"
-#
-#export CONFD_BACKEND CONFD_BACKEND_SERVER CONFD_PREFIX CONFD_INTERVAL CONFD_PARAMS 
-#   
-#checkrancher
-#
-## Create confd start script
-#echo "#!/usr/bin/env sh" > ${CONFD_SCRIPT}
-#echo "/usr/bin/nohup /usr/bin/confd ${CONFD_PARAMS} > /opt/vamp/confd.log 2>&1 &" >> ${CONFD_SCRIPT}
-#echo "rc=\$?" >> ${CONFD_SCRIPT}
-#echo "echo \$rc" >> ${CONFD_SCRIPT}
-#chmod 755 ${CONFD_SCRIPT}
-#
-## Run confd to get first appli configuration
-#${CONFD_ONETIME}
-#CONFD_TEST="/usr/bin/confd ${CONFD_PARAMS}"
+set -e
+
+function log {
+    echo `date` $ME - $@
+}
+
+function checkrancher {
+    log "checking rancher network..."
+    a="`ip a s dev eth0 &> /dev/null; echo $?`" 
+    while  [ $a -eq 1 ];
+    do
+        a="`ip a s dev eth0 &> /dev/null; echo $?`" 
+        sleep 1
+    done
+
+    b="`ping -c 1 rancher-metadata &> /dev/null; echo $?`"
+    while [ $b -eq 1 ]; 
+    do
+        b="`ping -c 1 rancher-metadata &> /dev/null; echo $?`"
+        sleep 1 
+    done
+}
+
+CONFD_BACKEND=${CONFD_BACKEND:-"rancher"}
+CONFD_BACKEND_SERVER=${CONFD_BACKEND_SERVER:-"rancher-metadata"}
+CONFD_PREFIX=${CONFD_PREFIX:-"/2015-12-19"}
+CONFD_INTERVAL=${CONFD_INTERVAL:-5}
+CONFD_PARAMS=${CONFD_PARAMS:-"-backend ${CONFD_BACKEND} -prefix ${CONFD_PREFIX} -node ${CONFD_BACKEND_SERVER}"}
+CONFD_ONETIME="/usr/bin/confd -onetime ${CONFD_PARAMS}"
+CONFD_SCRIPT=${CONFD_SCRIPT:-"/usr/bin/confd-start.sh"}
+
+CONFD_PARAMS="-interval ${CONFD_INTERVAL} ${CONFD_PARAMS}"
+
+export CONFD_BACKEND CONFD_BACKEND_SERVER CONFD_PREFIX CONFD_INTERVAL CONFD_PARAMS 
+   
+checkrancher
+
+# Create confd start script
+echo "#!/usr/bin/env sh" > ${CONFD_SCRIPT}
+echo "/usr/bin/nohup /usr/bin/confd ${CONFD_PARAMS} > /opt/vamp/confd.log 2>&1 &" >> ${CONFD_SCRIPT}
+echo "rc=\$?" >> ${CONFD_SCRIPT}
+echo "echo \$rc" >> ${CONFD_SCRIPT}
+chmod 755 ${CONFD_SCRIPT}
+
+# Run confd to get first appli configuration
+${CONFD_ONETIME}
 
 #Run varnish
 varnishd -a :80 -T localhost:6082 -s malloc,256m -f /etc/varnish/default.vcl
-
-
-# Run confd
-#${CONFD_TEST}
 
 # Run monit
 log "[ Starting monit... ]"
