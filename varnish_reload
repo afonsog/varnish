@@ -1,9 +1,10 @@
-#!/bin/ash
+#!/usr/bin/env bash
+
 # Me guardo la vieja configuracion
-cp /etc/varnish/default.vcl /etc/varnish/old_default.vcl
+#cp /etc/varnish/default.vcl /etc/varnish/old_default.vcl
 
 # Copio la nueva configuracion
-cp /etc/varnish/new-default.vcl /etc/varnish/default.vcl
+#cp /etc/varnish/new-default.vcl /etc/varnish/default.vcl
 
 # Genero un nuevo nombre de configuracion
 NEW_CONFIG_NAME="boot-$RANDOM"
