@@ -39,7 +39,7 @@ checkrancher
 
 # Create confd start script
 echo "#!/usr/bin/env sh" > ${CONFD_SCRIPT}
-echo "/usr/bin/nohup /usr/bin/confd ${CONFD_PARAMS} > /opt/vamp/confd.log 2>&1 &" >> ${CONFD_SCRIPT}
+echo "/usr/bin/nohup /usr/bin/confd ${CONFD_PARAMS} > /var/log/confd.log 2>&1 &" >> ${CONFD_SCRIPT}
 echo "rc=\$?" >> ${CONFD_SCRIPT}
 echo "echo \$rc" >> ${CONFD_SCRIPT}
 chmod 755 ${CONFD_SCRIPT}
