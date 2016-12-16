@@ -45,12 +45,15 @@ echo "echo \$rc" >> ${CONFD_SCRIPT}
 chmod 755 ${CONFD_SCRIPT}
 
 # Run confd to get first appli configuration
-log "[ Getting haproxy configuration... ]"
 ${CONFD_ONETIME}
 
 #Run varnish
 varnishd -a :80 -T localhost:6082 -s malloc,256m -f /etc/varnish/default.vcl
 
+
+# Run confd
+${CONFD_SCRIPT}
+
 # Run monit
-log "[ Starting monit... ]"
-/usr/bin/monit -I
+#log "[ Starting monit... ]"
+#/usr/bin/monit -I
