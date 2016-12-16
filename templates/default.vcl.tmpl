@@ -5,9 +5,9 @@ import directors;
 
 {{range $s, $stack_name := ls "/stacks"}}{{range $i, $service_name := ls (printf "/stacks/%s/services" $stack_name)}}{{if exists (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend" $stack_name $service_name)}}backend {{$backend := getv (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend" $stack_name $service_name)}}{{$backend}}{
   {{range $i2, $container := ls (printf "/stacks/%s/services/%s/containers" $stack_name $service_name)}}{{ if not (eq $container "stacks")}}{{$ip := getv (printf "/stacks/%s/services/%s/containers/%s/primary_ip" $stack_name $service_name $container)}}.host = "{{$ip}}";{{end}}{{end}}
-  {{if exists (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend_port" $stack_name $service_name)}}{{$port := getv (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend_port" $stack_name $service_name)}}.port = "{{$port}}";
+  {{if exists (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend_port" $stack_name $service_name)}}{{$port := getv (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend_port" $stack_name $service_name)}}.port = "{{$port}}";{{end}}
 }
-{{end}}{{end}}{{end}}{{end}}
+{{end}}{{end}}{{end}}
 
 
 
