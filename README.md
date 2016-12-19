@@ -5,11 +5,18 @@ Esta imagen inicia varnish que lee los metadatos de rancher para autoconfigurar 
 # Como funciona
 * Crear su stack con varnish y las aplicaciones que desee utilizar.
 * Agregar los labels a cada aplicacion que desee agregar como backend. Necesita definir dos labels:
-  * io.rancher_varnish_backend: este label indicara que se debe agregar como backend y ademas indicara el nombre del backend dentro de la configuracion de varnish.
-  * io.rancher_varnish_backend_port: puerto donde se encuentra escuchando la aplicación.
-* Ademas se pueden definir diferentes opciones de configuracion para el archivo default.vcl definiendo metadatos en el archivo rancher-compose
-
-
+  * **io.rancher_varnish_backend**: este label indicara que se debe agregar como backend y ademas indicara el nombre del backend dentro de la configuracion de varnish.
+  * **io.rancher_varnish_backend_port**: puerto donde se encuentra escuchando la aplicación.
+* Ademas se pueden definir diferentes opciones de configuracion para el archivo default.vcl definiendo metadatos en el archivo rancher-compose, debe tener la siguiente estructura:
+```yml
+varnish:
+  ...
+  ...
+  ...
+  metadata:
+    varnish-backends:
+      options:
+```
 
 
 
