@@ -15,9 +15,9 @@ varnish:
   ...
   metadata:
     varnish-backends:
-      options:
+      options: |
 ```
-
+Se definira **options** donde se pueden agregar todas las configuraciones que desee.
 
 
 # Ejemplo de uso
