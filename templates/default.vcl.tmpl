@@ -21,3 +21,6 @@ sub vcl_init {
   {{range $s, $stack_name := ls "/stacks"}}{{range $i, $service_name := ls (printf "/stacks/%s/services" $stack_name)}}{{if exists (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend" $stack_name $service_name)}}{{$backend := getv (printf "/stacks/%s/services/%s/labels/io.rancher_varnish_backend" $stack_name $service_name)}}vdir.add_backend({{$backend}});
   {{end}}{{end}}{{end}}
 }
+
+
+{{if exists "/self/service/metadata/varnish-backends/options"}}{{getv "/self/service/metadata/varnish-backends/options"}}{{end}}
