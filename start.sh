@@ -48,7 +48,7 @@ chmod 755 ${CONFD_SCRIPT}
 ${CONFD_ONETIME}
 
 #Run varnish
-varnishd -a :80 -T localhost:6082 -s malloc,256m -f /etc/varnish/default.vcl
+varnishd -a :80 -T localhost:6082 -s malloc,4096m -f /etc/varnish/default.vcl
 
 # Run monit
 log "[ Starting monit... ]"
